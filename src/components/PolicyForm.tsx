@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FormControl, FormLabel, Input, Button, Box, RadioGroup, HStack, Checkbox, Select, IconButton } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Button, Box, RadioGroup, HStack, Checkbox, Select, IconButton, Textarea } from '@chakra-ui/react';
 import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import examplePolicies from './ExamplePolicies';
 
@@ -11,6 +11,9 @@ interface PolicyFormProps {
   onActionsChange: (actions: string[]) => void;
   onStatementsChange: (statements: string[]) => void;
   onEffectChange: (effect: string) => void;
+  onActionChoiceChange: (actionChoice: string) => void;
+  onResourcesChange: (resources: string[]) => void;
+  onConditionsChange: (conditions: string[]) => void;
 }
 
 const PolicyForm: React.FC<PolicyFormProps> = ({
@@ -21,19 +24,25 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
   onActionsChange,
   onStatementsChange,
   onEffectChange,
+  onActionChoiceChange,
+  onResourcesChange,
+  onConditionsChange,
 }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [targetIds, setTargetIds] = useState<string[]>([]);
+    const [resources, setResources] = useState<string[]>([]);
+    const [conditions, setConditions] = useState<string[]>([]);
     const [selectedServices, setSelectedServices] = useState<string[]>([]);
     const [selectedActions, setSelectedActions] = useState<string[]>([]);
     const [statements, setStatements] = useState<string[]>([]);
     const [effect, setEffect] = useState('Deny');
+    const [actionChoice, setActionChoice] = useState('Action');
     const services = ['IAM', 'S3', 'EC2', 'Organizations', 'KMS', 'CloudTrail', 'CloudWatch', 'Config', 'CloudFormation', 'CloudFront'];
     const actions = ['List', 'Get', 'Delete', 'All'];
     const [isExampleSelected, setIsExampleSelected] = useState(false);
-    const [servicesVisible, setServicesVisible] = useState(true);
-    const [actionsVisible, setActionsVisible] = useState(true);
+    const [servicesVisible, setServicesVisible] = useState(false);
+    const [actionsVisible, setActionsVisible] = useState(false);
 
     const handleSelectChange = (selectedOption: string) => {
         if (selectedOption) {
@@ -75,6 +84,18 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
         onTargetIdsChange(newTargetIds);
     };
 
+    const handleResourcesChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newResources = event.target.value.split('\n');
+        setResources(newResources);
+        onResourcesChange(newResources);
+    };
+
+    const handleConditionsChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newConditions = event.target.value.split('\n');
+        setConditions(newConditions);
+        onConditionsChange(newConditions);
+    };
+
     const handleServiceClick = (service: string) => {
         const updatedServices = selectedServices.includes(service)
         ? selectedServices.filter((s) => s !== service)
@@ -100,6 +121,11 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
         onEffectChange(newEffect);
     };
 
+    const handleActionChoiceChange = (newActionChoice: string) => {
+        setActionChoice(newActionChoice);
+        onActionChoiceChange(newActionChoice);
+    };
+
     const generateStatements = () => {
         if (selectedServices.length > 0 && selectedActions.length > 0) {
             const statements = selectedServices.flatMap((service) =>
@@ -115,13 +141,12 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
     useEffect(() => {
         const statements = generateStatements();
     }, [selectedServices, selectedActions, isExampleSelected]);
-  
 
     return (
         <form>
           <Box>
             <Box className='form-box'>
-                <Select placeholder='Choose from examples' variant='flushed' onChange={(e) => handleSelectChange(e.target.value)}>
+                <Select placeholder='Choose from examples' className='select-examples' onChange={(e) => handleSelectChange(e.target.value)}>
                     <option value='PreventCloudtrailDisable'>PreventCloudtrailDisable</option>
                     <option value='PreventLeavingOrg'>PreventLeavingOrg</option>
                     <option value='PreventGuardDutyDisable'>PreventGuardDutyDisable</option>
@@ -148,6 +173,27 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
                             >Deny</Checkbox>
                         </HStack>
                     </RadioGroup>
+                    <FormLabel className='form-label'>Action & NotAction:</FormLabel>
+                    <RadioGroup onChange={handleActionChoiceChange} value={actionChoice} mb={4} className='radio-group' defaultValue='Action'>
+                        <HStack spacing="40px" padding="0.5em">
+                            <Checkbox
+                                id="action"
+                                name="actionChoice"
+                                value="Action"
+                                isChecked={actionChoice === 'Action'}
+                                onChange={() => handleActionChoiceChange('Action')}
+                                disabled={isExampleSelected}
+                            >Action</Checkbox>
+                            <Checkbox
+                                id="notAction"
+                                name="actionChoice"
+                                value="NotAction"
+                                isChecked={actionChoice === 'NotAction'}
+                                onChange={() => handleActionChoiceChange('NotAction')}
+                                disabled={isExampleSelected}
+                            >NotAction</Checkbox>
+                        </HStack>
+                    </RadioGroup>
                     <Box className='form-single-input'>
                         <FormLabel className='form-label' marginRight="1rem">Policy name:</FormLabel>
                         <Input className='form-input' type="text" value={name} onChange={handleNameChange} size="md" disabled={isExampleSelected}/>
@@ -157,8 +203,16 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
                         <Input className='form-input' type="text" value={description} onChange={handleDescriptionChange} size="md" disabled={isExampleSelected}/>
                     </Box>
                     <Box className='form-single-input'>
-                        <FormLabel className='form-label' marginRight="1rem">Target IDs (comma separated):</FormLabel>
+                        <FormLabel className='form-label' marginRight="1rem">Target IDs (comma separated, for CloudFormation only):</FormLabel>
                         <Input className='form-input' type="text" value={targetIds} onChange={handleTargetIdsChange} size="md"/>
+                    </Box>
+                    <Box className='form-single-input'>
+                        <FormLabel className='form-label' marginRight="1rem">Resources (new line separated):</FormLabel>
+                        <Textarea resize="none" height="100px" width="500px" overflowY="visible" className='form-input' value={resources.join('\n')} onChange={handleResourcesChange} size="md"/>
+                    </Box>
+                    <Box className='form-single-input'>
+                        <FormLabel className='form-label' marginRight="1rem">Conditions (coming soon):</FormLabel>
+                        <Textarea disabled resize="none" height="100px" width="500px" overflowY="visible" className='form-input' value={conditions.join('\n')} onChange={handleConditionsChange} size="md"/>
                     </Box>
                 </FormControl>
             </Box>

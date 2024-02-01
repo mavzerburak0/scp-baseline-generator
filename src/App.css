@@ -1,7 +1,5 @@
-
-
 #root {
-  max-width: 1280px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -49,13 +47,11 @@
 .left-column {
   flex: 1;
   padding: 20px;
-  max-width: 600px;
 }
 
 .right-column {
   flex: 1;
   border-left: 1px solid #ccc;
-  max-width: 600px;
   max-height: 100%;
   padding-left: 1em;
 }
@@ -80,9 +76,6 @@
   margin: 0.3rem;
 }
 
-.form-box {
-}
-
 .form-input {
   flex: 1;
   padding: 0.5em 1em;
@@ -90,6 +83,14 @@
   border-radius: 0 4px 4px 0;
   font-size: 1em;
   max-width: 100%;
+}
+
+.form-single-input {
+  padding-bottom: 1.5em;
+}
+
+.right-column-box {
+  max-width: 800px;
 }
 
 
@@ -105,4 +106,10 @@
   justify-content: space-between;
   margin: auto;
   border-bottom: 1px solid #ccc;
+}
+
+.select-examples {
+  margin-bottom: 1rem;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: medium;
 }
