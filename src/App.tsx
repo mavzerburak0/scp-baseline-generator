@@ -18,7 +18,7 @@ import { CopyBlock, a11yDark } from 'react-code-blocks';
 
 
 const App: React.FC = () => {
-  const [names, setNames] = useState<{ name: string; description: string; targetIds: string[]; services: string[], actions: string[], statements: string[], effect: string, actionChoice: string, resources: string[], conditions: string[] }[]>([
+  const [policies, setPolicies] = useState<{ name: string; description: string; targetIds: string[]; services: string[], actions: string[], statements: string[], effect: string, actionChoice: string, resources: string[], conditions: string[] }[]>([
     { name: '', description: '', targetIds: [], services: [], actions: [], statements: [], effect: '', actionChoice: '', resources: ["*"], conditions: []},
   ]);
   const [concatenatedPoliciesTerraform, setConcatenatedPoliciesTerraform] = useState<string>('');
@@ -32,92 +32,92 @@ Resources:`);
   const showLineNumbers = true;
 
   const handleNameChange = (name: string, index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].name = name;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].name = name;
+      return newPolicies;
     });
   };
 
   const handleDescriptionChange = (description: string, index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].description = description;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].description = description;
+      return newPolicies;
     });
   };
 
   const handleTargetIdsChange = (targetIds: string[], index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].targetIds = targetIds;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].targetIds = targetIds;
+      return newPolicies;
     });
   };
 
   const handleResourcesChange = (resources: string[], index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].resources = resources;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].resources = resources;
+      return newPolicies;
     });
   };
 
   const handleConditionsChange = (conditions: string[], index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].conditions = conditions;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].conditions = conditions;
+      return newPolicies;
     });
   };
 
   const handleServicesChange = (services: string[], index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].services = services;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].services = services;
+      return newPolicies;
     });
   };
 
   const handleActionsChange = (actions: string[], index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].actions = actions;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].actions = actions;
+      return newPolicies;
     });
   };
 
   const handleStatementsChange = (statements: string[], index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].statements = statements;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].statements = statements;
+      return newPolicies;
     });
   }
 
   const handleEffectChange = (effect: string, index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].effect = effect;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].effect = effect;
+      return newPolicies;
     });
   }
 
   const handleActionChoiceChange = (actionChoice: string, index: number) => {
-    setNames((prevNames) => {
-      const newNames = [...prevNames];
-      newNames[index].actionChoice = actionChoice;
-      return newNames;
+    setPolicies((prevPolicies) => {
+      const newPolicies = [...prevPolicies];
+      newPolicies[index].actionChoice = actionChoice;
+      return newPolicies;
     });
   }
 
-  const removeNameForm = (index: number) => {
-    setNames((prevNames) => prevNames.filter((_, i) => i !== index));
+  const removePolicyForm = (index: number) => {
+    setPolicies((prevPolicies) => prevPolicies.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
     
-    const generatedText = names
+    const generatedText = policies
       .map(({ name, description, targetIds, statements, effect, actionChoice, resources }) => {
         return `
     ${name}SCP:
@@ -142,11 +142,11 @@ Resources:`);
       .join('');
 
     setConcatenatedPoliciesCloudformation(generatedText);
-  }, [names]);
+  }, [policies]);
 
   useEffect(() => {
     
-    const generatedTerraform = names
+    const generatedTerraform = policies
       .map(({ name, description, statements, effect, actionChoice, resources }) => {
         return `\ndata "aws_iam_policy_document" "${name}" {
 statement {
@@ -166,10 +166,10 @@ type        = "SERVICE_CONTROL_POLICY"
       .join('');
 
     setConcatenatedPoliciesTerraform(generatedTerraform);
-  }, [names]);
+  }, [policies]);
 
-  const addNameForm = () => {
-    setNames((prevNames) => [...prevNames, { name: '', description: '', targetIds: [], services: [], actions: [], statements: [], effect: '', actionChoice: '', resources: [], conditions: []}]);
+  const addPolicyForm = () => {
+    setPolicies((prevPolicies) => [...prevPolicies, { name: '', description: '', targetIds: [], services: [], actions: [], statements: [], effect: '', actionChoice: '', resources: [], conditions: []}]);
   };
 
   return (
@@ -178,17 +178,17 @@ type        = "SERVICE_CONTROL_POLICY"
       <Container maxW="container.xl" p={4} display="flex">
         <div className='left-column'>
           <Tabs isFitted>
-            <TabList mb="1em">
-              {names.map((_, index) => (
+            <TabList mb="1em" className='tab-list'>
+              {policies.map((_, index) => (
                 <Tab key={index}>
                   Policy {index + 1}
-                  <IconButton aria-label="Close" fontSize="10px" icon={<CloseIcon />} onClick={() => removeNameForm(index)} ml={5} />
+                  <IconButton aria-label="Close" fontSize="10px" icon={<CloseIcon />} onClick={() => removePolicyForm(index)} ml={5} />
                 </Tab>
               ))}
-              <Tab onClick={addNameForm}><AddIcon /></Tab>
+              <Tab onClick={addPolicyForm}><AddIcon /></Tab>
             </TabList>
             <TabPanels>
-              {names.map((nameObj, index) => (
+              {policies.map((nameObj, index) => (
                 <TabPanel key={index}>
                   <VStack spacing={4} align="left">
                     <PolicyForm
@@ -258,7 +258,6 @@ type        = "SERVICE_CONTROL_POLICY"
                 </TabPanel>
             </TabPanels>
           </Tabs>
-          
         </div>
       </Container>
     </Container>

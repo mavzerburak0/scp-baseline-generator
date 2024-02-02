@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FormControl, FormLabel, Input, Button, Box, RadioGroup, HStack, Checkbox, Select, IconButton, Textarea } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Button, Box, RadioGroup, HStack, Checkbox, Select, IconButton, Textarea, Text } from '@chakra-ui/react';
 import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import examplePolicies from './ExamplePolicies';
 
@@ -38,8 +38,12 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
     const [statements, setStatements] = useState<string[]>([]);
     const [effect, setEffect] = useState('Deny');
     const [actionChoice, setActionChoice] = useState('Action');
-    const services = ['IAM', 'S3', 'EC2', 'Organizations', 'KMS', 'CloudTrail', 'CloudWatch', 'Config', 'CloudFormation', 'CloudFront'];
-    const actions = ['List', 'Get', 'Delete', 'All'];
+    const services = ['IAM', 'S3', 'EC2', 'Organizations', 'KMS', 'CloudTrail', 'CloudWatch', 'Config', 'CloudFormation', 
+    'CloudFront', 'Account', 'Activate', 'Amplify', 'Aurora', 'DynamoDb', 'Elasticache', 'Cognito-Identity', 
+    'RDS', 'Lambda', 'SNS', 'SQS', 'GuardDuty', 'WAF', 'Route53', 'SecretsManager', 'STS', 'Sagemaker'];
+    const actions = ['All', 'List', 'Get', 'Delete', 'Close', 'Disable', 'Enable', 'Put', 'Create', 'Start', 'Tag', 
+    'Untag', 'Update', 'Remove', 'Cancel', 'Deactivate', 'Detach', 'Disassociate', 'Associate', 'Attach', 'Stop', 
+    'Clone', 'Copy', 'Restore', 'Reset', 'Set', 'Accept', 'Reject', 'Allow', 'Deny', 'Block', 'Unblock'];
     const [isExampleSelected, setIsExampleSelected] = useState(false);
     const [servicesVisible, setServicesVisible] = useState(false);
     const [actionsVisible, setActionsVisible] = useState(false);
@@ -146,10 +150,12 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
         <form>
           <Box>
             <Box className='form-box'>
-                <Select placeholder='Choose from examples' className='select-examples' onChange={(e) => handleSelectChange(e.target.value)}>
-                    <option value='PreventCloudtrailDisable'>PreventCloudtrailDisable</option>
-                    <option value='PreventLeavingOrg'>PreventLeavingOrg</option>
-                    <option value='PreventGuardDutyDisable'>PreventGuardDutyDisable</option>
+                <Select borderColor="#ccc" borderRadius="5%" placeholder='Choose from examples' className='select-examples' onChange={(e) => handleSelectChange(e.target.value)}>
+                {Object.keys(examplePolicies).map((policyKey) => (
+                <option key={policyKey} value={policyKey}>
+                    {examplePolicies[policyKey].name}
+                </option>
+                ))}
                 </Select>
                 <FormControl>
                     <FormLabel className='form-label'>Effect:</FormLabel>
@@ -162,6 +168,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
                                 isChecked={effect === 'Allow'}
                                 onChange={() => handleEffectChange('Allow')}
                                 disabled={isExampleSelected}
+                                className='checkbox'
                             >Allow</Checkbox>
                             <Checkbox
                                 id="deny"
@@ -170,6 +177,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
                                 isChecked={effect === 'Deny'}
                                 onChange={() => handleEffectChange('Deny')}
                                 disabled={isExampleSelected}
+                                className='checkbox'
                             >Deny</Checkbox>
                         </HStack>
                     </RadioGroup>
@@ -183,6 +191,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
                                 isChecked={actionChoice === 'Action'}
                                 onChange={() => handleActionChoiceChange('Action')}
                                 disabled={isExampleSelected}
+                                className='checkbox'
                             >Action</Checkbox>
                             <Checkbox
                                 id="notAction"
@@ -191,28 +200,29 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
                                 isChecked={actionChoice === 'NotAction'}
                                 onChange={() => handleActionChoiceChange('NotAction')}
                                 disabled={isExampleSelected}
+                                className='checkbox'
                             >NotAction</Checkbox>
                         </HStack>
                     </RadioGroup>
                     <Box className='form-single-input'>
                         <FormLabel className='form-label' marginRight="1rem">Policy name:</FormLabel>
-                        <Input className='form-input' type="text" value={name} onChange={handleNameChange} size="md" disabled={isExampleSelected}/>
+                        <Input className='form-input' marginTop="0.7rem" height="2rem" width="35rem" type="text" value={name} onChange={handleNameChange} size="md" disabled={isExampleSelected}/>
                     </Box>
                     <Box className='form-single-input'>
                         <FormLabel className='form-label' marginRight="1rem">Policy description:</FormLabel>
-                        <Input className='form-input' type="text" value={description} onChange={handleDescriptionChange} size="md" disabled={isExampleSelected}/>
+                        <Input className='form-input' marginTop="0.7rem" height="2rem" width="35rem" type="text" value={description} onChange={handleDescriptionChange} size="md" disabled={isExampleSelected}/>
                     </Box>
                     <Box className='form-single-input'>
                         <FormLabel className='form-label' marginRight="1rem">Target IDs (comma separated, for CloudFormation only):</FormLabel>
-                        <Input className='form-input' type="text" value={targetIds} onChange={handleTargetIdsChange} size="md"/>
+                        <Input className='form-input' marginTop="0.7rem" height="2rem" width="35rem" type="text" value={targetIds} onChange={handleTargetIdsChange} size="md"/>
                     </Box>
                     <Box className='form-single-input'>
                         <FormLabel className='form-label' marginRight="1rem">Resources (new line separated):</FormLabel>
-                        <Textarea resize="none" height="100px" width="500px" overflowY="visible" className='form-input' value={resources.join('\n')} onChange={handleResourcesChange} size="md"/>
+                        <Textarea height="7rem" width="35rem" marginTop="0.7rem" overflowY="visible" className='form-input' value={resources.join('\n')} onChange={handleResourcesChange} size="md"/>
                     </Box>
                     <Box className='form-single-input'>
-                        <FormLabel className='form-label' marginRight="1rem">Conditions (coming soon):</FormLabel>
-                        <Textarea disabled resize="none" height="100px" width="500px" overflowY="visible" className='form-input' value={conditions.join('\n')} onChange={handleConditionsChange} size="md"/>
+                        <FormLabel className='form-label' marginRight="1rem">Conditions:</FormLabel>
+                        <Textarea disabled placeholder='Coming soon...' height="7rem" width="35rem" marginTop="0.7rem" overflowY="visible" className='form-input' value={conditions.join('\n')} onChange={handleConditionsChange} size="md"/>
                     </Box>
                 </FormControl>
             </Box>
@@ -262,6 +272,13 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
                     </Box>
                 )}
                 
+                <Box className='form-single-input'>
+                        <Text>
+                            Feel free to enter your own statements below if they are not available above as buttons.
+                            (new line separated)
+                        </Text>
+                        <Textarea disabled placeholder='Coming soon...' height="7rem" width="35rem" overflowY="visible" className='form-input' value={conditions.join('\n')} onChange={handleConditionsChange} size="md"/>
+                </Box>
             </Box>
           </Box>
           <br />

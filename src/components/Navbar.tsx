@@ -51,8 +51,8 @@ const MenuLinks = ({ isOpen }) => {
         pt={[4, 4, 0, 0]}
       >
         <MenuItem color="white" to="/">Home</MenuItem>
-        <MenuItem color="white" to="/examples">Examples </MenuItem>
-        <MenuItem color="white" to="/best-practices">Best Practices </MenuItem>
+        {/* <MenuItem color="white" to="/examples">Examples </MenuItem>
+        <MenuItem color="white" to="/best-practices">Best Practices </MenuItem> */}
         <MenuItem color="white" to="/about">About </MenuItem>
       </Stack>
     </Box>
