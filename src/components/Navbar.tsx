@@ -19,7 +19,7 @@ const NavBar = (props) => {
   return (
     <NavBarContainer {...props}>
       <Logo
-        w="100px"
+        w="15rem"
         color={["white", "white", "primary.500", "primary.500"]}
       />
       <MenuLinks isOpen={isOpen} />
@@ -40,6 +40,7 @@ const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
 const MenuLinks = ({ isOpen }) => {
   return (
     <Box
+      minWidth="10rem"
       display={{ base: isOpen ? "block" : "none", md: "block" }}
       flexBasis={{ base: "100%", md: "auto" }}
     >

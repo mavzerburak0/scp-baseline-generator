@@ -142,6 +142,12 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
         }
     };
 
+    const handleStatementsChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newStatements = event.target.value.split('\n');
+        setStatements(newStatements);
+        onStatementsChange(newStatements);
+    }
+
     useEffect(() => {
         const statements = generateStatements();
     }, [selectedServices, selectedActions, isExampleSelected]);
@@ -272,12 +278,12 @@ const PolicyForm: React.FC<PolicyFormProps> = ({
                     </Box>
                 )}
                 
-                <Box className='form-single-input'>
+                <Box className='extra-statements-box'>
                         <Text>
-                            Feel free to enter your own statements below if they are not available above as buttons.
+                            Feel free to enter your own action statements below if they are not available above as buttons.
                             (new line separated)
                         </Text>
-                        <Textarea disabled placeholder='Coming soon...' height="7rem" width="35rem" overflowY="visible" className='form-input' value={conditions.join('\n')} onChange={handleConditionsChange} size="md"/>
+                        <Textarea disabled={isExampleSelected} height="7rem" width="35rem" overflowY="visible" className='extra-statements' value={statements.join('\n')} onChange={handleStatementsChange} size="md"/>
                 </Box>
             </Box>
           </Box>
