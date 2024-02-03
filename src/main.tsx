@@ -8,24 +8,6 @@ import Examples from './components/Examples.tsx';
 import BestPractices from './components/BestPractices.tsx';
 import About from './components/About.tsx';
 
-// const router = createBrowserRouter(
-//   createRoutesFromElements(
-//     <Route path="/" element={<Header />}>
-//       <Route index element={<Home />} />
-//       <Route path="login" element={<Login />} />
-//       <Route path="register" element={<Register />} />
-//     </Route>
-//   )
-// )
-
-// function Main() {
-//   return (
-//     <RouterProvider router={router}>
-//       <App />
-//     </RouterProvider>
-//   )
-// }
-
 function MyRoutes() {
   return (
   <BrowserRouter>
@@ -47,6 +29,6 @@ function Main() {
   )
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <Main />
-)
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+root.render(<Main />);
